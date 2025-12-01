@@ -1,0 +1,118 @@
+const nodemailer = require('nodemailer');
+
+class NotificationService {
+  constructor() {
+    // Email transporter (using Gmail as example, configure for SendGrid)
+    this.emailTransporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
+  }
+
+  /**
+   * Send email notification
+   */
+  async sendEmail(to, subject, htmlContent, textContent = null) {
+    try {
+      const mailOptions = {
+        from: `${process.env.EMAIL_FROM_NAME || 'SSMS'} <${process.env.EMAIL_FROM || process.env.EMAIL_USER}>`,
+        to,
+        subject,
+        html: htmlContent,
+        text: textContent || htmlContent.replace(/<[^>]*>/g, ''),
+      };
+
+      const info = await this.emailTransporter.sendMail(mailOptions);
+      
+      console.log(`✅ Email sent successfully to ${to}`);
+      
+      return {
+        success: true,
+        messageId: info.messageId,
+      };
+    } catch (error) {
+      console.error(`❌ Failed to send email to ${to}:`, error.message);
+      throw error;
+    }
+  }
+
+  /**
+   * Send SMS notification (mock implementation)
+   */
+  async sendSMS(to, message) {
+    try {
+      // TODO: Implement with Twilio
+      console.log(`📱 SMS sent to ${to}: ${message}`);
+      
+      return {
+        success: true,
+        sid: 'mock-sid-' + Date.now(),
+      };
+    } catch (error) {
+      console.error(`❌ Failed to send SMS to ${to}:`, error.message);
+      throw error;
+    }
+  }
+
+  /**
+   * Send enrollment confirmation
+   */
+  async sendEnrollmentConfirmation(student, course) {
+    const subject = 'Course Enrollment Confirmation';
+    const html = `
+      <h2>Enrollment Confirmation</h2>
+      <p>Dear ${student.firstName} ${student.lastName},</p>
+      <p>You have been successfully enrolled in:</p>
+      <ul>
+        <li><strong>Course:</strong> ${course.courseName} (${course.courseCode})</li>
+        <li><strong>Credits:</strong> ${course.credits}</li>
+      </ul>
+      <p>Best regards,<br>SSMS Team</p>
+    `;
+
+    await this.sendEmail(student.email, subject, html);
+  }
+
+  /**
+   * Send fee payment reminder
+   */
+  async sendFeeReminder(student, invoice) {
+    const subject = 'Fee Payment Reminder';
+    const html = `
+      <h2>Fee Payment Reminder</h2>
+      <p>Dear ${student.firstName} ${student.lastName},</p>
+      <p>Reminder about your fee payment:</p>
+      <ul>
+        <li><strong>Invoice:</strong> ${invoice.invoiceNumber}</li>
+        <li><strong>Amount:</strong> ${invoice.currency} ${invoice.amount}</li>
+        <li><strong>Due Date:</strong> ${invoice.dueDate}</li>
+      </ul>
+      <p>Please make payment before the due date.</p>
+      <p>Best regards,<br>SSMS Team</p>
+    `;
+
+    await this.sendEmail(student.email, subject, html);
+  }
+
+  /**
+   * Send welcome email
+   */
+  async sendWelcomeEmail(user, userType) {
+    const subject = 'Welcome to SSMS';
+    const html = `
+      <h2>Welcome to Smart School Management System!</h2>
+      <p>Dear ${user.firstName} ${user.lastName},</p>
+      <p>Your ${userType} account has been created successfully.</p>
+      <p><strong>Email:</strong> ${user.email}</p>
+      <p>You can now log in to access your portal.</p>
+      <p>Best regards,<br>SSMS Team</p>
+    `;
+
+    await this.sendEmail(user.email, subject, html);
+  }
+}
+
+module.exports = new NotificationService();
