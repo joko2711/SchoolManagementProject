@@ -1,19 +1,18 @@
 const { sequelize } = require('../config/database');
-
-// Import Student model
 const Student = require('./Student.model');
 const User = require('./User.model');
+const Course = require('./Course.model');
 
-// Définir les associations si nécessaire
-// Exemple: Student.hasMany(Enrollment, { foreignKey: 'studentId' });
+// Define associations here if needed
+// Student.hasMany(Enrollment);
+// Course.hasMany(Enrollment);
 
-// Sync database
-const syncDatabase = async (options = {}) => {
+const syncDatabase = async () => {
   try {
-    await sequelize.sync(options);
+    await sequelize.sync({ alter: true });
     console.log('✅ Database synchronized successfully.');
   } catch (error) {
-    console.error('❌ Error synchronizing database:', error);
+    console.error('❌ Database synchronization failed:', error);
     throw error;
   }
 };
@@ -22,5 +21,6 @@ module.exports = {
   sequelize,
   Student,
   User,
+  Course,
   syncDatabase,
 };
