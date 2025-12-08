@@ -8,10 +8,9 @@ const {
   getProfile,
   updatePassword,
   logout,
-} = require('../controllers/authController');
-const { authMiddleware, authorize } = require('../middlewares/auth');
+} = require('../controllers/auth.controller');
+const { authMiddleware, authorize } = require('../middlewares/auth.middleware');
 const validate = require('../middlewares/validate');
-const { authLimiter } = require('../middlewares/rateLimiter');
 
 const router = express.Router();
 
@@ -56,7 +55,6 @@ const updatePasswordValidation = [
 // Public routes
 router.post(
   '/register/student',
-  authLimiter,
   registerStudentValidation,
   validate,
   registerStudent
@@ -64,7 +62,6 @@ router.post(
 
 router.post(
   '/register/teacher',
-  authLimiter,
   registerTeacherValidation,
   validate,
   registerTeacher
@@ -72,7 +69,6 @@ router.post(
 
 router.post(
   '/login',
-  authLimiter,
   loginValidation,
   validate,
   login
@@ -96,7 +92,7 @@ router.post('/logout', logout);
 router.post(
   '/register/admin',
   authorize('super_admin', 'admin'),
-  registerTeacherValidation, // Similar validation
+  registerTeacherValidation,
   validate,
   registerAdmin
 );

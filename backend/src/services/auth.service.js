@@ -37,8 +37,10 @@ const registerStudent = async (data) => {
     throw new Error('Email already registered');
   }
 
-  // Generate unique student ID
-  const studentId = `STU-${Date.now()}-${Math.floor(1000 + Math.random() * 9000)}`;
+  // Generate unique student ID (shorter format)
+  const timestamp = Date.now().toString().slice(-8);
+  const random = Math.floor(1000 + Math.random() * 9000);
+  const studentId = `STU-${timestamp}${random}`;
 
   // Create student
   const student = await Student.create({
@@ -80,7 +82,9 @@ const registerTeacher = async (data) => {
     throw new Error('Email already registered');
   }
 
-  const userId = `TCH-${Date.now()}-${Math.floor(1000 + Math.random() * 9000)}`;
+  const timestamp = Date.now().toString().slice(-8);
+  const random = Math.floor(1000 + Math.random() * 9000);
+  const userId = `TCH-${timestamp}${random}`;
 
   const teacher = await User.create({
     userId,
@@ -115,7 +119,9 @@ const registerAdmin = async (data) => {
     throw new Error('Email already registered');
   }
 
-  const userId = `ADM-${Date.now()}-${Math.floor(1000 + Math.random() * 9000)}`;
+  const timestamp = Date.now().toString().slice(-8);
+  const random = Math.floor(1000 + Math.random() * 9000);
+  const userId = `ADM-${timestamp}${random}`;
 
   const admin = await User.create({
     userId,
