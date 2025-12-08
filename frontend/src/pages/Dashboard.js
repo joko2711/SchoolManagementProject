@@ -143,13 +143,13 @@ const Dashboard = () => {
                 <Button variant="contained" fullWidth size="large" onClick={() => navigate('/courses')}>
                   View All Courses
                 </Button>
-                <Button variant="outlined" fullWidth size="large">
+                <Button variant="outlined" fullWidth size="large" onClick={() => navigate('/attendance')}>
                   Check Attendance
                 </Button>
-                <Button variant="outlined" fullWidth size="large">
+                <Button variant="outlined" fullWidth size="large" onClick={() => navigate('/grades')}>
                   View Grades
                 </Button>
-                <Button variant="outlined" fullWidth size="large">
+                <Button variant="outlined" fullWidth size="large" onClick={() => navigate('/fees')}>
                   Pay Fees
                 </Button>
               </Box>
